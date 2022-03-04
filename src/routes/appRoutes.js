@@ -1,26 +1,29 @@
 const express = require('express');
 const router = new express.Router();
-const controller = require('../controller/appController')
+const adminController = require('../controller/adminController')
+const ownerController = require('../controller/ownerController')
+const authenticateToken = require('../middleware/authTocken');
 
 let routes = (app) => {
     try {
         //Admin: SignUp, signIn, signOut, Create Owner
-        //Owner: SignUp (EmailVerification), signIn, signOut, update, delete
+        //Owner: SignUp, signIn (EmailVerification), signOut, Create, update, delete
         //Hotel: Create, update, delete
         //Rooms: Create, update, delete
         //User: Create, update, delete
 
         //Admin SignUp
-        router.post('/api/v1/oyo/admin/signup', controller.createAdmin);
+        router.post('/api/v1/oyo/admin/signup', adminController.createAdmin);
         //Admin SignIn
-        router.post('/api/v1/oyo/admin/login', controller.adminLogin);
+        router.post('/api/v1/oyo/admin/login', adminController.adminLogin);
         //Admin Logout
-        //router.post('/api/v1/oyo/admin/logout', controller.adminLogout);
-
+        router.post('/api/v1/oyo/admin/logout', adminController.adminLogout);
         //Admin: Create owner:
-        router.post('/api/v1/oyo/admin/owner', controller.createOwner);
-        // router.post('api/v1/oyo/owner/login', controller.ownerLogin);
-        // router.post('api/v1/oyo/owner/logout', controller.ownerLogout);
+        router.post('/api/v1/oyo/admin/owner', authenticateToken, ownerController.createOwner);
+        //Owner Login
+        router.post('/api/v1/oyo/owner/login', ownerController.ownerLogin);
+        //Logout
+        router.post('/api/v1/oyo/owner/logout', ownerController.ownerLogout);
         // router.post('api/v1/oyo/hotel', controller.createHotel);
         // router.post('api/v1/oyo/hotel', controller.createHotel);
         app.use(router);    
